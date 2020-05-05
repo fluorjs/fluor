@@ -9,7 +9,7 @@ $ npm install fluor
 or
 
 ```shell
-$ yarn add fluo
+$ yarn add fluor
 ```
 
 ## Development
