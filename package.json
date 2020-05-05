@@ -6,6 +6,11 @@
   "repository": "https://github.com/fluorjs/fluor",
   "author": "François Vaux",
   "license": "MIT",
+  "files": [
+    "index.js",
+    "dist/fluor.min.js",
+    "dist/fluor.dev.js"
+  ],
   "scripts": {
     "build": "npm run build:prod && npm run build:dev",
     "build:prod": "terser --config-file terser.json --output dist/fluor.min.js -- index.js",
