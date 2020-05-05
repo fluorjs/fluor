@@ -1,0 +1,13 @@
+{
+  "compress": {
+    "global_defs": {
+      "process.env.NODE_ENV": "production"
+    }
+  },
+  "mangle": {
+    "properties": {
+      "regex": "^__.*__$"
+    }
+  },
+  "module": true
+}

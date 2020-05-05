@@ -1,4 +1,4 @@
-const DEV = process.env.NODE_ENV !== "production"
+const DEV = "development" !== "production"
 
 const LIST_OPS = {
   append: "push",

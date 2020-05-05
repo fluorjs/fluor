@@ -1,9 +1,38 @@
 {
   "name": "fluor",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Sprinkle interactivity on your design",
   "main": "index.js",
   "repository": "https://github.com/fluorjs/fluor",
   "author": "François Vaux",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run build:prod && npm run build:dev",
+    "build:prod": "terser --config-file terser.json --output dist/fluor.min.js -- index.js",
+    "build:dev": "sed 's/process.env.NODE_ENV/\"development\"/' index.js > dist/fluor.dev.js"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "prettier": "^2.0.5",
+    "terser": "^4.6.13",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.2"
+  },
+  "prettier": {
+    "semi": false
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "index.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.json": [
+      "prettier --write"
+    ]
+  }
 }
