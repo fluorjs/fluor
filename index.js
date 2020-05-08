@@ -144,12 +144,12 @@ function handleLoop(attr, element, data) {
 }
 
 function handleAttributeBind(attr, element, data) {
-  if (!attr.name.startsWith("@")) {
+  if (!attr.name.startsWith("f-")) {
     return
   }
 
   const value = dotPath(attr.value, data)
-  const concreteAttr = attr.name.slice(1)
+  const concreteAttr = attr.name.slice(2)
   switch (value) {
     case true:
       element.setAttribute(concreteAttr, "")
@@ -184,13 +184,13 @@ function createMolecule(moleculeId, rootNode) {
       }
       for (const attr of element.attributes) {
         switch (attr.name) {
-          case "@text":
+          case "f-text":
             element.textContent = dotPath(attr.value, data)
             break
-          case "@html":
+          case "f-html":
             element.innerHTML = dotPath(attr.value, data)
             break
-          case "@each":
+          case "f-each":
             handleLoop(attr, element, data)
             break
           default:

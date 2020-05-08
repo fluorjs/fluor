@@ -5,26 +5,26 @@
     <title>Fluor.js dev page</title>
   </head>
   <body>
-    <fieldset @class="text">
+    <fieldset f-class="text">
       <legend>Parent</legend>
 
-      <p @text="text"></p>
+      <p f-text="text"></p>
       <button>Change text</button>
 
       <fieldset>
         <legend>deeper</legend>
 
-        <p>Text: <strong @text="text"></strong></p>
-        <p>Parent: <strong @text="$parent.text"></strong></p>
+        <p>Text: <strong f-text="text"></strong></p>
+        <p>Parent: <strong f-text="$parent.text"></strong></p>
 
         <button>Change text</button>
 
         <fieldset>
           <legend>Even deeper!</legend>
 
-          <p>Text: <strong @text="text"></strong></p>
-          <p>Parent: <strong @text="$parent.text"></strong></p>
-          <p>Grand-parent: <strong @text="$parent.$parent.text"></strong></p>
+          <p>Text: <strong f-text="text"></strong></p>
+          <p>Parent: <strong f-text="$parent.text"></strong></p>
+          <p>Grand-parent: <strong f-text="$parent.$parent.text"></strong></p>
           <button>Change text</button>
 
           <script type="fluor">
@@ -40,16 +40,16 @@
       </fieldset>
 
       <ul>
-        <template @each="item in items">
+        <template f-each="item in items">
           <li>
-            <strong @text="$index"></strong>
-            <slot @text="$parent.listPrefix"></slot>
-            <em @text="item"></em>
+            <strong f-text="$index"></strong>
+            <slot f-text="$parent.listPrefix"></slot>
+            <em f-text="item"></em>
           </li>
         </template>
       </ul>
 
-      <input type="text" @value="listPrefix" />
+      <input type="text" f-value="listPrefix" />
 
       <script type="fluor">
         setup({
@@ -74,19 +74,19 @@
 
       <h3>Simple Loop</h3>
       <ul>
-        <template @each="item in letterList">
-          <li @text="item"></li>
+        <template f-each="item in letterList">
+          <li f-text="item"></li>
         </template>
       </ul>
 
       <h3>Nested Loop over 2 different lists</h3>
       <ul>
-        <template @each="letter in letterList">
+        <template f-each="letter in letterList">
           <li>
-            <slot @text="letter"></slot>
+            <slot f-text="letter"></slot>
             <ul>
-              <template @each="number in $parent.numberList">
-                <li @text="number"></li>
+              <template f-each="number in $parent.numberList">
+                <li f-text="number"></li>
               </template>
             </ul>
           </li>
@@ -95,13 +95,13 @@
 
       <h3>Nested Loop over a list of objects</h3>
       <ul>
-        <template @each="bandMember in bandMembers">
+        <template f-each="bandMember in bandMembers">
           <li>
-            #<slot @text="bandMember.id"></slot>
-            <strong @text="bandMember.name"></strong>
+            #<slot f-text="bandMember.id"></slot>
+            <strong f-text="bandMember.name"></strong>
             <ul>
-              <template @each="instrument in bandMember.instruments">
-                <li @text="instrument"></li>
+              <template f-each="instrument in bandMember.instruments">
+                <li f-text="instrument"></li>
               </template>
             </ul>
           </li>
