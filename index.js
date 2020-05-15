@@ -246,6 +246,10 @@ function createMolecule(moleculeId, rootNode) {
       }
     },
 
+    chain(...fns) {
+      return (ev) => fns.forEach((fn) => fn(ev)())
+    },
+
     addClass(className, selector = null) {
       return classListMutation("add", className, selector)
     },
