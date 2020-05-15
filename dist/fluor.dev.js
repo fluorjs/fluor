@@ -249,6 +249,14 @@ function createMolecule(moleculeId, rootNode) {
       }
     },
 
+    addClass(className, selector = null) {
+      return handleClassList(className, selector, 'add');
+    },
+
+    removeClass(className, selector = null) {
+      return handleClassList(className, selector, 'remove');
+    },
+
     toggleClass(className, selector = null) {
       return handleClassList(className, selector, 'toggle');
     },
