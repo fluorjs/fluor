@@ -216,13 +216,10 @@ function createMolecule(moleculeId, rootNode) {
     }
   }
 
-  function handleClassList(className, selector = null, action = "toggle") {
-    if (!className) {
-      return
-    }
+  function classListMutation(mutation, className, selector = null) {
     return (ev) => {
       const target = selector ? $$(selector, rootNode) : ev.currentTarget
-      target.classList[action](className)
+      target.classList[mutation](className)
     }
   }
 
@@ -250,15 +247,15 @@ function createMolecule(moleculeId, rootNode) {
     },
 
     addClass(className, selector = null) {
-      return handleClassList(className, selector, "add")
+      return classListMutation("add", className, selector)
     },
 
     removeClass(className, selector = null) {
-      return handleClassList(className, selector, "remove")
+      return classListMutation("remove", className, selector)
     },
 
     toggleClass(className, selector = null) {
-      return handleClassList(className, selector, "toggle")
+      return classListMutation("toggle", className, selector)
     },
 
     ...Object.entries(LIST_OPS).reduce(
