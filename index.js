@@ -216,6 +216,16 @@ function createMolecule(moleculeId, rootNode) {
     }
   }
 
+  function handleClassList(className, selector = null, action = "toggle") {
+    if (!className) {
+      return
+    }
+    return (ev) => {
+      const target = selector ? $$(selector, rootNode) : ev.currentTarget
+      target.classList[action](className)
+    }
+  }
+
   const api = {
     set(objectOrKey, valueOrFn) {
       return () => {
@@ -239,11 +249,8 @@ function createMolecule(moleculeId, rootNode) {
       }
     },
 
-    toggle(className, selector = null) {
-      return (ev) => {
-        const target = selector ? $$(selector, rootNode) : ev.currentTarget
-        target.classList.toggle(className)
-      }
+    toggleClass(className, selector = null) {
+      return handleClassList(className, selector, "toggle")
     },
 
     ...Object.entries(LIST_OPS).reduce(
