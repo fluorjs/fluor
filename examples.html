@@ -132,6 +132,27 @@
       </script>
     </fieldset>
 
+    <fieldset>
+      <legend>Class List mutations</legend>
+
+      <p>Hello</p>
+      <p>World</p>
+
+      <style>
+        p.urgent {
+          color: red;
+        }
+        p.bold {
+          font-weight: bold;
+        }
+      </style>
+
+      <script type="fluor">
+        on("click", "p", toggleClass("urgent"))
+        on("click", "p", toggleClass("bold", "p"))
+      </script>
+    </fieldset>
+
     <script type="module" src="dist/fluor.dev.js"></script>
     <!-- <script type="module" src="dist/fluor.min.js"></script> -->
   </body>

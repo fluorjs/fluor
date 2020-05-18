@@ -218,8 +218,8 @@ function createMolecule(moleculeId, rootNode) {
 
   function classListMutation(mutation, className, selector = null) {
     return (ev) => {
-      const target = selector ? $$(selector, rootNode) : ev.target
-      target.classList[mutation](className)
+      const targets = selector ? $(selector, rootNode) : [ev.target]
+      targets.forEach((target) => target.classList[mutation](className))
     }
   }
 
