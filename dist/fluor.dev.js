@@ -218,7 +218,7 @@ function createMolecule(moleculeId, rootNode) {
 
   function classListMutation(mutation, className, selector = null) {
     return (ev) => {
-      const target = selector ? $$(selector, rootNode) : ev.currentTarget
+      const target = selector ? $$(selector, rootNode) : ev.target
       target.classList[mutation](className)
     }
   }
@@ -236,14 +236,17 @@ function createMolecule(moleculeId, rootNode) {
     },
 
     on(event, selector, fnOrArray) {
-      const handler = Array.isArray(fnOrArray)
-        ? (ev) => fnOrArray.forEach((fn) => fn(ev))
-        : fnOrArray
-      for (const node of $(selector, rootNode)) {
-        if (moleculeOf(node).$root === rootNode) {
-          node.addEventListener(event, handler)
+      const handler = (ev) => {
+        if (
+          ev.target.matches(selector) &&
+          moleculeOf(ev.target).$root === rootNode
+        ) {
+          Array.isArray(fnOrArray)
+            ? fnOrArray.forEach((fn) => fn(ev))
+            : fnOrArray(ev)
         }
       }
+      rootNode.addEventListener(event, handler)
     },
 
     addClass(className, selector = null) {
