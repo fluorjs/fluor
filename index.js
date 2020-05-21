@@ -286,8 +286,8 @@ function createMolecule(moleculeId, rootNode) {
     $id: moleculeId,
     $root: rootNode,
     $parent: parent,
-    $: (selector) => $(selector, rootNode),
-    $$: (selector) => $$(selector, rootNode),
+    $: (selector, root = rootNode) => $(selector, root),
+    $$: (selector, root = rootNode) => $$(selector, root),
   }
 
   return api
