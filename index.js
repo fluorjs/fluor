@@ -144,21 +144,17 @@ function handleLoop(attr, element, data) {
 }
 
 function handleAttributeBind(attr, element, data) {
-  if (!attr.name.startsWith("f-")) {
-    return
-  }
-
-  const value = dotPath(attr.value, data)
-  const concreteAttr = attr.name.slice(2)
+  const [attrName, valuePath] = attr.value.split(":")
+  const value = dotPath(valuePath, data)
   switch (value) {
     case true:
-      element.setAttribute(concreteAttr, "")
+      element.setAttribute(attrName, "")
       break
     case false:
-      element.removeAttribute(concreteAttr)
+      element.removeAttribute(attrName)
       break
     default:
-      element.setAttribute(concreteAttr, value)
+      element.setAttribute(attrName, value)
   }
 }
 
@@ -193,8 +189,9 @@ function createMolecule(moleculeId, rootNode) {
           case "f-each":
             handleLoop(attr, element, data)
             break
-          default:
+          case "f-bind":
             handleAttributeBind(attr, element, data)
+            break
         }
       }
     })

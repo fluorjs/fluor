@@ -49,7 +49,7 @@
         </template>
       </ul>
 
-      <input type="text" f-value="listPrefix" />
+      <input type="text" f-bind="value:listPrefix" />
 
       <script type="fluor">
         setup({
@@ -150,6 +150,23 @@
       <script type="fluor">
         on("click", "p", toggleClass("urgent"))
         on("click", "p", toggleClass("bold", "p"))
+      </script>
+    </fieldset>
+
+    <fieldset>
+      <legend>Attribute binding</legend>
+
+      <p f-bind="class:pClass">Hello</p>
+      <button f-bind="disabled:btnIsDisabled">Click me</button>
+
+      <style>
+        p.someClass {
+          color: red;
+        }
+      </style>
+
+      <script type="fluor">
+        setup({pClass: "someClass", btnIsDisabled: true})
       </script>
     </fieldset>
 
