@@ -31,12 +31,21 @@ function createId() {
 
 // Inspired by
 // https://github.com/lukeed/clsx
-function classNames(obj) {
-  return Array.isArray(obj)
-    ? obj.join(" ")
-    : typeof obj === "string"
-    ? obj
-    : Object.entries(obj).reduce((a, [k, v]) => (v ? a.concat(k) : a), [])
+function classNames(...objs) {
+  return objs
+    .map((obj) => {
+      return Array.isArray(obj)
+        ? obj.map((e) => classNames(...e)).join(" ")
+        : typeof obj === "string"
+        ? obj
+        : classNames(
+            ...Object.entries(obj).reduce(
+              (a, [k, v]) => (v ? a.concat(k) : a),
+              []
+            )
+          )
+    })
+    .join(" ")
 }
 
 function dotPath(path, object) {
@@ -400,12 +409,11 @@ function discoverMolecules(root) {
   document.body.appendChild(fragment)
 }
 
-async function start() {
+async function autostart() {
   await domReady()
   discoverMolecules(document.body)
 }
-
-start()
+autostart()
 
 export default function Fluor(selectorOrNode, atomCode) {
   const rootNode = $$(selectorOrNode)

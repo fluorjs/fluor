@@ -181,6 +181,21 @@
       </script>
     </fieldset>
 
+    <fieldset>
+      <legend>classes</legend>
+      <pre f-text="json"></pre>
+      <script type="fluor">
+        setup("json", JSON.stringify([
+          classes("a", "b", "c"),
+          classes(["a", "b", "c"]),
+          classes(["a", ["b", "c"]]),
+          classes(true && "a"),
+          classes(false && "b"),
+          classes("a", {"b": true, "c": false}),
+        ], null, 2))
+      </script>
+    </fieldset>
+
     <script>
       function randomText() {
         return Math.random().toString(36).slice(2)
