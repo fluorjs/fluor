@@ -400,12 +400,11 @@ function discoverMolecules(root) {
   document.body.appendChild(fragment)
 }
 
-async function start() {
+async function autostart() {
   await domReady()
   discoverMolecules(document.body)
 }
-
-start()
+autostart()
 
 export default function Fluor(selectorOrNode, atomCode) {
   const rootNode = $$(selectorOrNode)
