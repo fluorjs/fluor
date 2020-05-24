@@ -93,7 +93,49 @@ function moleculeOf(node) {
   return null
 }
 
-function handleLoop(attr, element, data) {
+function handleFIf(attr, element, data) {
+  if (DEV && element.tagName !== "TEMPLATE") {
+    throw "@each only works on <template> tags"
+  }
+
+  const truthValue = dotPath(attr.value, data)
+
+  if (element.__f_if_items__) {
+    const molecules = [
+      ...new Set(element.__f_if_items__.map((e) => e.molecule)),
+    ]
+    for (const m of molecules) {
+      m.$root.parentElement.removeChild(m.$root)
+      destroyMolecule(m)
+    }
+    element.__f_if_items__ = null
+  }
+  if (truthValue && !element.__f_if_items__) {
+    const fragment = document.createDocumentFragment()
+    const clone = element.content.cloneNode(true)
+
+    element.__f_if_items__ = []
+
+    for (const child of [...clone.children]) {
+      element.__f_if_items__.push({ child })
+      fragment.append(child)
+    }
+
+    element.parentNode.insertBefore(fragment, element.nextSibling)
+
+    for (const ifItem of element.__f_if_items__) {
+      const { child } = ifItem
+      const id = createId()
+      const molecule = createMolecule(id, child)
+      ifItem.molecule = molecule
+      Fluor.__molecules__.set(child, molecule)
+      discoverMolecules(child)
+      molecule.render()
+    }
+  }
+}
+
+function handleFEach(attr, element, data) {
   if (DEV && element.tagName !== "TEMPLATE") {
     throw "@each only works on <template> tags"
   }
@@ -105,29 +147,29 @@ function handleLoop(attr, element, data) {
   // TODO: This is highly inefficient as we are removing then recreating all
   // elements from the list.
   // We should probably use a key-based strategy like most other frameworks do.
-  if (element.__f_loop_items__) {
+  if (element.__f_each_items__) {
     const molecules = [
-      ...new Set(element.__f_loop_items__.map((e) => e.molecule)),
+      ...new Set(element.__f_each_items__.map((e) => e.molecule)),
     ]
     for (const m of molecules) {
-      destroyMolecule(m)
       m.$root.parentElement.removeChild(m.$root)
+      destroyMolecule(m)
     }
-    element.__f_loop_items__ = null
-    handleLoop(attr, element, data)
+    element.__f_each_items__ = null
+    handleFEach(attr, element, data)
   } else {
-    element.__f_loop_items__ = []
+    element.__f_each_items__ = []
     for (let index = 0, l = items.length; index < l; index++) {
       const clone = element.content.cloneNode(true)
       for (const child of [...clone.children]) {
-        element.__f_loop_items__.push({ index, child })
+        element.__f_each_items__.push({ index, child })
         fragment.append(child)
       }
     }
 
     element.parentNode.insertBefore(fragment, element.nextSibling)
 
-    for (const loopItem of element.__f_loop_items__) {
+    for (const loopItem of element.__f_each_items__) {
       const { index, child } = loopItem
       const id = createId()
       const molecule = createMolecule(id, child)
@@ -143,7 +185,7 @@ function handleLoop(attr, element, data) {
   }
 }
 
-function handleAttributeBind(attr, element, data) {
+function handleFBind(attr, element, data) {
   const [attrName, valuePath] = attr.value.split(":")
   const value = dotPath(valuePath, data)
   switch (value) {
@@ -186,11 +228,14 @@ function createMolecule(moleculeId, rootNode) {
           case "f-html":
             element.innerHTML = dotPath(attr.value, data)
             break
+          case "f-if":
+            handleFIf(attr, element, data)
+            break
           case "f-each":
-            handleLoop(attr, element, data)
+            handleFEach(attr, element, data)
             break
           case "f-bind":
-            handleAttributeBind(attr, element, data)
+            handleFBind(attr, element, data)
             break
         }
       }

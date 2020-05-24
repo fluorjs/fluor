@@ -5,8 +5,8 @@
     <title>Fluor.js dev page</title>
   </head>
   <body>
-    <fieldset f-class="text">
-      <legend>Parent</legend>
+    <fieldset f-bind="class:text">
+      <legend>Scoping</legend>
 
       <p f-text="text"></p>
       <button>Change text</button>
@@ -63,11 +63,20 @@
       </script>
     </fieldset>
 
-    <script>
-      function randomText() {
-        return Math.random().toString(36).slice(2)
-      }
-    </script>
+    <fieldset>
+      <legend>Conditionals</legend>
+
+      <button>Toggle item</button>
+
+      <template f-if="visible">
+        <p>I exist!</p>
+      </template>
+
+      <script type="fluor">
+        setup("visible", true)
+        on("click", "button", set("visible", v => !v))
+      </script>
+    </fieldset>
 
     <fieldset>
       <legend>Loops</legend>
@@ -169,6 +178,12 @@
         setup({pClass: "someClass", btnIsDisabled: true})
       </script>
     </fieldset>
+
+    <script>
+      function randomText() {
+        return Math.random().toString(36).slice(2)
+      }
+    </script>
 
     <script type="module" src="dist/fluor.dev.js"></script>
     <!-- <script type="module" src="dist/fluor.min.js"></script> -->
