@@ -78,14 +78,14 @@ function walk(node, fn) {
 
 // Find the closest parent molecule for a given DOM node
 function moleculeOf(node) {
-  if (!Fluor.__molecules__.size) {
+  if (!FluorRuntime.__molecules__.size) {
     return null
   }
 
   let parent = node
   while (parent) {
-    if (Fluor.__molecules__.has(parent)) {
-      return Fluor.__molecules__.get(parent)
+    if (FluorRuntime.__molecules__.has(parent)) {
+      return FluorRuntime.__molecules__.get(parent)
     }
     parent = parent.parentElement
   }
@@ -128,7 +128,7 @@ function handleFIf(attr, element, data) {
       const id = createId()
       const molecule = createMolecule(id, child)
       ifItem.molecule = molecule
-      Fluor.__molecules__.set(child, molecule)
+      FluorRuntime.__molecules__.set(child, molecule)
       discoverMolecules(child)
       molecule.render()
     }
@@ -178,7 +178,7 @@ function handleFEach(attr, element, data) {
         [iterator]: items[index],
       })
       loopItem.molecule = molecule
-      Fluor.__molecules__.set(child, molecule)
+      FluorRuntime.__molecules__.set(child, molecule)
       discoverMolecules(child)
       molecule.render()
     }
@@ -333,7 +333,7 @@ function createMolecule(moleculeId, rootNode) {
 }
 
 function destroyMolecule(molecule) {
-  const scripts = Fluor.__scripts__.get(molecule) || []
+  const scripts = FluorRuntime.__scripts__.get(molecule) || []
   for (const script of scripts) {
     script.parentElement.removeChild(script)
   }
@@ -341,17 +341,18 @@ function destroyMolecule(molecule) {
 
 const PUBLIC_API = Object.keys(createMolecule())
 
-function Fluor(id, atomCode) {
-  const molecule = Array.from(Fluor.__molecules__.values()).find(
+function FluorRuntime(id, atomCode) {
+  const molecule = Array.from(FluorRuntime.__molecules__.values()).find(
     (m) => m.$id === id
   )
   atomCode(molecule)
+  molecule.render(false)
 }
 
-window.Fluor = Fluor
+window.Fluor = FluorRuntime
 
-Fluor.__molecules__ = new Map()
-Fluor.__scripts__ = new Map()
+FluorRuntime.__molecules__ = new Map()
+FluorRuntime.__scripts__ = new Map()
 
 function discoverMolecules(root) {
   const atoms = []
@@ -366,12 +367,12 @@ function discoverMolecules(root) {
   for (const atom of atoms) {
     const rootNode = atom.parentElement
     let molecule
-    if (Fluor.__molecules__.has(rootNode)) {
-      molecule = Fluor.__molecules__.get(rootNode)
+    if (FluorRuntime.__molecules__.has(rootNode)) {
+      molecule = FluorRuntime.__molecules__.get(rootNode)
     } else {
       const id = createId()
       molecule = createMolecule(id, rootNode)
-      Fluor.__molecules__.set(rootNode, molecule)
+      FluorRuntime.__molecules__.set(rootNode, molecule)
     }
     atom.__f_molecule__ = molecule
     molecules.push(molecule)
@@ -383,16 +384,16 @@ function discoverMolecules(root) {
     const scriptElement = document.createElement("script")
     const wrappedScript = `Fluor("${molecule.$id}", ({${PUBLIC_API.join(
       ","
-    )}}) => {${atom.textContent}; render(false)})`
+    )}}) => {${atom.textContent}})`
     scriptElement.textContent = wrappedScript
     atom.parentElement.removeChild(atom)
-    if (Fluor.__scripts__.has(molecule)) {
-      Fluor.__scripts__.set(molecule, [
-        ...Fluor.__scripts__.get(molecule),
+    if (FluorRuntime.__scripts__.has(molecule)) {
+      FluorRuntime.__scripts__.set(molecule, [
+        ...FluorRuntime.__scripts__.get(molecule),
         scriptElement,
       ])
     } else {
-      Fluor.__scripts__.set(molecule, [scriptElement])
+      FluorRuntime.__scripts__.set(molecule, [scriptElement])
     }
     fragment.appendChild(scriptElement)
   }
@@ -405,3 +406,11 @@ async function start() {
 }
 
 start()
+
+export default function Fluor(selectorOrNode, atomCode) {
+  const rootNode = $$(selectorOrNode)
+  const id = createId()
+  const molecule = createMolecule(id, rootNode)
+  FluorRuntime.__molecules__.set(rootNode, molecule)
+  FluorRuntime(id, atomCode)
+}
