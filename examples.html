@@ -117,6 +117,7 @@
         </template>
       </ul>
       <button class="add-band-member">Add member</button>
+      <button class="remove-band-member">Remove member</button>
 
       <script type="fluor">
         setup({
@@ -137,6 +138,7 @@
           }
         }
 
+        on("click", "button.remove-band-member", shift("bandMembers"))
         on("click", "button.add-band-member", append("bandMembers", prev => newMember(prev[prev.length - 1].id + 1)))
       </script>
     </fieldset>
