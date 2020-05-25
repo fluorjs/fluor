@@ -74,7 +74,7 @@
 
       <script type="fluor">
         setup("visible", true)
-        on("click", "button", set("visible", v => !v))
+        on("click", "button", toggle("visible"))
       </script>
     </fieldset>
 
@@ -92,7 +92,7 @@
 
       <script type="fluor">
         setup("shown", false)
-        on("click", "button", set("shown", s => !s))
+        on("click", "button", toggle("shown"))
       </script>
     </fieldset>
 
@@ -178,7 +178,7 @@
           "showList": true,
           "list": [1, 2, 3]
         })
-        on("click", "button", set("showList", s => !s))
+        on("click", "button", toggle("showList"))
       </script>
     </fieldset>
 

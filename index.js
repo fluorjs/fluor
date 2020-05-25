@@ -303,6 +303,13 @@ function createMolecule(moleculeId, rootNode) {
       }
     },
 
+    toggle(variable) {
+      return () => {
+        _set(variable, (v) => !v)
+        render()
+      }
+    },
+
     setup(objectOrKey, valueOrFn) {
       _set(objectOrKey, valueOrFn)
     },
