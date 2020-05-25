@@ -144,6 +144,26 @@
     </fieldset>
 
     <fieldset>
+      <legend>Conditional with embedded Fluor script</legend>
+
+      <template f-if="shown">
+        <div>
+          <p f-text="message"></p>
+          <script type="fluor">
+            setup("message", "Hello, world!")
+          </script>
+        </div>
+      </template>
+
+      <button>Toggle message</button>
+
+      <script type="fluor">
+        setup("shown", false)
+        on("click", "button", set("shown", s => !s))
+      </script>
+    </fieldset>
+
+    <fieldset>
       <legend>List Operations</legend>
 
       <template f-each="item in list">
