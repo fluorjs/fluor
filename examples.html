@@ -162,6 +162,27 @@
     </fieldset>
 
     <fieldset>
+      <legend>List in conditional</legend>
+      <template f-if="showList">
+        <ul>
+          <template f-each="item in $parent.list">
+            <li f-text="item"></li>
+          </template>
+        </ul>
+      </template>
+
+      <button>Toggle list</button>
+
+      <script type="fluor">
+        setup({
+          "showList": true,
+          "list": [1, 2, 3]
+        })
+        on("click", "button", set("showList", s => !s))
+      </script>
+    </fieldset>
+
+    <fieldset>
       <legend>List Operations</legend>
 
       <template f-each="item in list">
