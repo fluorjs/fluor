@@ -43,7 +43,7 @@ function classNames(...objs) {
 function dotPath(path, object) {
   return path.split(".").reduce((obj, current) => {
     if (DEV && !(current in obj)) {
-      throw `No path ${path} in ${JSON.stringify(object)}`
+      console.warn(`No path ${path} in ${JSON.stringify(object)}`)
     }
     return obj[current]
   }, object)
@@ -94,8 +94,11 @@ function moleculeOf(node) {
 }
 
 function handleFIf(attr, element, data) {
-  if (DEV && element.tagName !== "TEMPLATE") {
-    throw "@each only works on <template> tags"
+  if (element.tagName !== "TEMPLATE") {
+    if (DEV) {
+      console.warn("f-if only works on <template> tags")
+    }
+    return
   }
 
   const truthValue = dotPath(attr.value, data)
@@ -136,8 +139,11 @@ function handleFIf(attr, element, data) {
 }
 
 function handleFEach(attr, element, data) {
-  if (DEV && element.tagName !== "TEMPLATE") {
-    throw "@each only works on <template> tags"
+  if (element.tagName !== "TEMPLATE") {
+    if (DEV) {
+      console.warn("f-each only works on <template> tags")
+    }
+    return
   }
 
   const [iterator, source] = attr.value.split(/\s+in\s+/)
@@ -263,9 +269,7 @@ function createMolecule(moleculeId, rootNode) {
   function classListMutation(mutation, className, selector = null) {
     return (ev) => {
       const targets = selector ? $(selector, rootNode) : [ev.currentTarget]
-      for (const target of targets) {
-        target.classList[mutation](className)
-      }
+      targets.forEach((target) => target.classList[mutation](className))
     }
   }
 
