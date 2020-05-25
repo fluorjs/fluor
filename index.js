@@ -128,10 +128,8 @@ function handleFIf(attr, element, data) {
 
     for (const ifItem of element.__f_if_items__) {
       const { child } = ifItem
-      const id = createId()
-      const molecule = createMolecule(id, child)
+      const molecule = newMolecule(child)
       ifItem.molecule = molecule
-      FluorRuntime.__molecules__.set(child, molecule)
       discoverMolecules(child)
       molecule.render()
     }
@@ -175,16 +173,14 @@ function handleFEach(attr, element, data) {
 
     element.parentNode.insertBefore(fragment, element.nextSibling)
 
-    for (const loopItem of element.__f_each_items__) {
-      const { index, child } = loopItem
-      const id = createId()
-      const molecule = createMolecule(id, child)
+    for (const eachItem of element.__f_each_items__) {
+      const { index, child } = eachItem
+      const molecule = newMolecule(child)
       molecule.setup({
         $index: index,
         [iterator]: items[index],
       })
-      loopItem.molecule = molecule
-      FluorRuntime.__molecules__.set(child, molecule)
+      eachItem.molecule = molecule
       discoverMolecules(child)
       molecule.render()
     }
@@ -332,19 +328,31 @@ function createMolecule(moleculeId, rootNode) {
     $parent: parent,
     $: (selector, root = rootNode) => $(selector, root),
     $$: (selector, root = rootNode) => $$(selector, root),
+
+    __scripts__: [],
   }
 
   return api
 }
 
+// Initialize a new molecule with a random ID and register it to the runtime
+function newMolecule(rootNode) {
+  const id = createId()
+  const molecule = createMolecule(id, rootNode)
+  FluorRuntime.__molecules__.set(rootNode, molecule)
+
+  return molecule
+}
+
 function destroyMolecule(molecule) {
-  const scripts = FluorRuntime.__scripts__.get(molecule) || []
-  for (const script of scripts) {
+  for (const script of molecule.__scripts__) {
     script.parentElement.removeChild(script)
   }
 }
 
-const PUBLIC_API = Object.keys(createMolecule())
+const PUBLIC_API = Object.keys(createMolecule()).filter(
+  (m) => !m.startsWith("__")
+)
 
 function FluorRuntime(id, atomCode) {
   const molecule = Array.from(FluorRuntime.__molecules__.values()).find(
@@ -357,11 +365,9 @@ function FluorRuntime(id, atomCode) {
 window.RunFluor = FluorRuntime
 
 FluorRuntime.__molecules__ = new Map()
-FluorRuntime.__scripts__ = new Map()
 
 function discoverMolecules(root) {
   const atoms = []
-  const molecules = []
 
   walk(root, (e) => {
     if (e.tagName === "SCRIPT" && e.type === "fluor") {
@@ -371,16 +377,9 @@ function discoverMolecules(root) {
 
   for (const atom of atoms) {
     const rootNode = atom.parentElement
-    let molecule
-    if (FluorRuntime.__molecules__.has(rootNode)) {
-      molecule = FluorRuntime.__molecules__.get(rootNode)
-    } else {
-      const id = createId()
-      molecule = createMolecule(id, rootNode)
-      FluorRuntime.__molecules__.set(rootNode, molecule)
-    }
+    const molecule =
+      FluorRuntime.__molecules__.get(rootNode) || newMolecule(rootNode)
     atom.__f_molecule__ = molecule
-    molecules.push(molecule)
   }
 
   const fragment = document.createDocumentFragment()
@@ -392,14 +391,7 @@ function discoverMolecules(root) {
     )}}) => {${atom.textContent}})`
     scriptElement.textContent = wrappedScript
     atom.parentElement.removeChild(atom)
-    if (FluorRuntime.__scripts__.has(molecule)) {
-      FluorRuntime.__scripts__.set(molecule, [
-        ...FluorRuntime.__scripts__.get(molecule),
-        scriptElement,
-      ])
-    } else {
-      FluorRuntime.__scripts__.set(molecule, [scriptElement])
-    }
+    molecule.__scripts__.push(scriptElement)
     fragment.appendChild(scriptElement)
   }
   document.body.appendChild(fragment)
@@ -413,8 +405,6 @@ autostart()
 
 export default function Fluor(selectorOrNode, atomCode) {
   const rootNode = $$(selectorOrNode)
-  const id = createId()
-  const molecule = createMolecule(id, rootNode)
-  FluorRuntime.__molecules__.set(rootNode, molecule)
-  FluorRuntime(id, atomCode)
+  const molecule = newMolecule(rootNode)
+  FluorRuntime(molecule.$id, atomCode)
 }
