@@ -35,7 +35,7 @@ function classNames(...objs) {
   return objs
     .map((obj) => {
       return Array.isArray(obj)
-        ? obj.map((e) => classNames(...e)).join(" ")
+        ? obj.map((e) => classNames(e)).join(" ")
         : typeof obj === "string"
         ? obj
         : classNames(
