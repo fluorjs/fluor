@@ -14,6 +14,10 @@ function $$(selector, root = document) {
   return root.querySelector(selector)
 }
 
+function createFragment() {
+  return document.createDocumentFragment()
+}
+
 function isFunction(object) {
   return Boolean(object && object.constructor && object.call && object.apply)
 }
@@ -114,7 +118,7 @@ function handleFIf(attr, element, data) {
     element.__f_if_items__ = null
   }
   if (truthValue && !element.__f_if_items__) {
-    const fragment = document.createDocumentFragment()
+    const fragment = createFragment()
     const clone = element.content.cloneNode(true)
 
     element.__f_if_items__ = []
@@ -146,7 +150,7 @@ function handleFEach(attr, element, data) {
 
   const [iterator, source] = attr.value.split(/\s+in\s+/)
   const items = dotPath(source, data)
-  const fragment = document.createDocumentFragment()
+  const fragment = createFragment()
 
   // TODO: This is highly inefficient as we are removing then recreating all
   // elements from the list.
@@ -382,7 +386,7 @@ function discoverMolecules(root) {
     atom.__f_molecule__ = molecule
   }
 
-  const fragment = document.createDocumentFragment()
+  const fragment = createFragment()
   for (const atom of atoms) {
     const molecule = atom.__f_molecule__
     const scriptElement = document.createElement("script")
