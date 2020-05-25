@@ -144,6 +144,27 @@
     </fieldset>
 
     <fieldset>
+      <legend>List Operations</legend>
+
+      <template f-each="item in list">
+        <p f-text="item"></p>
+      </template>
+
+      <button class="append">append</button>
+      <button class="prepend">prepend</button>
+      <button class="pop">pop</button>
+      <button class="shift">shift</button>
+
+      <script type="fluor">
+        setup("list", [1, 2, 3])
+        on("click", "button.append", append("list", l => l[l.length - 1] + 1))
+        on("click", "button.prepend", prepend("list", l => l[0] - 1))
+        on("click", "button.pop", pop("list"))
+        on("click", "button.shift", shift("list"))
+      </script>
+    </fieldset>
+
+    <fieldset>
       <legend>Class List mutations</legend>
 
       <p>Hello</p>

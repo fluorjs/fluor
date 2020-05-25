@@ -1,12 +1,5 @@
 const DEV = "development" !== "production"
 
-const LIST_OPS = {
-  append: "push",
-  prepend: "unshift",
-  pop: "pop",
-  shift: "shift",
-}
-
 function $(selector, root = document) {
   if (selector instanceof Node) {
     return [selector]
@@ -29,8 +22,7 @@ function createId() {
   return Math.random().toString(36).slice(2)
 }
 
-// Inspired by
-// https://github.com/lukeed/clsx
+// Inspired by https://github.com/lukeed/clsx
 function classNames(...objs) {
   return objs
     .map((obj) => {
@@ -80,18 +72,17 @@ function walk(node, fn) {
   while (queue.length) {
     const next = queue.shift()
     if (fn(next) !== false) {
-      Array.from(next.children, (c) => queue.push(c))
+      for (const c of next.children) {
+        queue.push(c)
+      }
     }
   }
 }
 
 // Find the closest parent molecule for a given DOM node
 function moleculeOf(node) {
-  if (!FluorRuntime.__molecules__.size) {
-    return null
-  }
-
   let parent = node
+
   while (parent) {
     if (FluorRuntime.__molecules__.has(parent)) {
       return FluorRuntime.__molecules__.get(parent)
@@ -222,6 +213,7 @@ function createMolecule(moleculeId, rootNode) {
     const mRoot = moleculeOf(rootNode)
 
     walk(rootNode, (element) => {
+      // Do not recurse into the element if it's from another molecule
       const mElement = moleculeOf(element)
       if (mElement !== mRoot) {
         if (updateChildren) {
@@ -229,6 +221,7 @@ function createMolecule(moleculeId, rootNode) {
         }
         return false
       }
+
       for (const attr of element.attributes) {
         switch (attr.name) {
           case "f-text":
@@ -270,7 +263,16 @@ function createMolecule(moleculeId, rootNode) {
   function classListMutation(mutation, className, selector = null) {
     return (ev) => {
       const targets = selector ? $(selector, rootNode) : [ev.currentTarget]
-      targets.forEach((target) => target.classList[mutation](className))
+      for (const target of targets) {
+        target.classList[mutation](className)
+      }
+    }
+  }
+
+  function listOperation(method) {
+    return (name, valueOrFn = null) => () => {
+      data[name][method](makeValue(valueOrFn, data[name], data))
+      render()
     }
   }
 
@@ -300,27 +302,17 @@ function createMolecule(moleculeId, rootNode) {
     addClass(className, selector = null) {
       return classListMutation("add", className, selector)
     },
-
     removeClass(className, selector = null) {
       return classListMutation("remove", className, selector)
     },
-
     toggleClass(className, selector = null) {
       return classListMutation("toggle", className, selector)
     },
 
-    ...Object.entries(LIST_OPS).reduce(
-      (a, [apiName, method]) => ({
-        ...a,
-        [apiName]: (name, valueOrFn) => {
-          return () => {
-            data[name][method](makeValue(valueOrFn, data[name], data))
-            render()
-          }
-        },
-      }),
-      {}
-    ),
+    append: listOperation("push"),
+    prepend: listOperation("unshift"),
+    pop: listOperation("pop"),
+    shift: listOperation("shift"),
 
     withEvent(fn) {
       return (ev) => fn(ev)()
