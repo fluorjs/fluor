@@ -354,7 +354,7 @@ function FluorRuntime(id, atomCode) {
   molecule.render(false)
 }
 
-window.Fluor = FluorRuntime
+window.RunFluor = FluorRuntime
 
 FluorRuntime.__molecules__ = new Map()
 FluorRuntime.__scripts__ = new Map()
@@ -387,7 +387,7 @@ function discoverMolecules(root) {
   for (const atom of atoms) {
     const molecule = atom.__f_molecule__
     const scriptElement = document.createElement("script")
-    const wrappedScript = `Fluor("${molecule.$id}", ({${PUBLIC_API.join(
+    const wrappedScript = `RunFluor("${molecule.$id}", ({${PUBLIC_API.join(
       ","
     )}}) => {${atom.textContent}})`
     scriptElement.textContent = wrappedScript
