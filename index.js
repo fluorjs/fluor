@@ -111,19 +111,11 @@ function handleFIf(attr, element, data) {
 
   const truthValue = dotPath(attr.value, data)
 
-  if (element.__f_if_items__) {
-    const molecules = [
-      ...new Set(element.__f_if_items__.map((e) => e.molecule)),
-    ]
-    for (const m of molecules) {
-      if (m.$root.parentNode) {
-        m.$root.parentNode.removeChild(m.$root)
-      }
-      destroyMolecule(m)
+  if (truthValue) {
+    if (element.__f_if_items__) {
+      return element.__f_if_items__.forEach((m) => m.render())
     }
-    element.__f_if_items__ = null
-  }
-  if (truthValue && !element.__f_if_items__) {
+
     const fragment = createFragment()
     const clone = element.content.cloneNode(true)
 
@@ -151,6 +143,13 @@ function handleFIf(attr, element, data) {
       discoverMolecules(child)
       molecule.render()
     }
+
+    return
+  }
+
+  if (element.__f_if_items__) {
+    removeMolecules(element.__f_if_items__)
+    element.__f_if_items__ = null
   }
 }
 
@@ -170,15 +169,7 @@ function handleFEach(attr, element, data) {
   // elements from the list.
   // We should probably use a key-based strategy like most other frameworks do.
   if (element.__f_each_items__) {
-    const molecules = [
-      ...new Set(element.__f_each_items__.map((e) => e.molecule)),
-    ]
-    for (const m of molecules) {
-      if (m.$root.parentNode) {
-        m.$root.parentNode.removeChild(m.$root)
-      }
-      destroyMolecule(m)
-    }
+    removeMolecules(element.__f_each_items__)
     element.__f_each_items__ = null
     handleFEach(attr, element, data)
   } else {
@@ -375,6 +366,16 @@ function newMolecule(rootNode) {
 function destroyMolecule(molecule) {
   for (const script of molecule.__scripts__) {
     script.parentNode.removeChild(script)
+  }
+}
+
+function removeMolecules(moleculeList) {
+  const molecules = [...new Set(moleculeList.map((e) => e.molecule))]
+  for (const m of molecules) {
+    if (m.$root.parentNode) {
+      m.$root.parentNode.removeChild(m.$root)
+    }
+    destroyMolecule(m)
   }
 }
 
