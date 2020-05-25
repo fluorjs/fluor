@@ -22,6 +22,10 @@ function isFunction(object) {
   return Boolean(object && object.constructor && object.call && object.apply)
 }
 
+function isFluorScript(e) {
+  return e.tagName === "SCRIPT" && e.type === "fluor"
+}
+
 function createId() {
   return Math.random().toString(36).slice(2)
 }
@@ -112,7 +116,9 @@ function handleFIf(attr, element, data) {
       ...new Set(element.__f_if_items__.map((e) => e.molecule)),
     ]
     for (const m of molecules) {
-      m.$root.parentNode.removeChild(m.$root)
+      if (m.$root.parentNode) {
+        m.$root.parentNode.removeChild(m.$root)
+      }
       destroyMolecule(m)
     }
     element.__f_if_items__ = null
@@ -124,6 +130,14 @@ function handleFIf(attr, element, data) {
     element.__f_if_items__ = []
 
     for (const child of [...clone.children]) {
+      if (isFluorScript(child)) {
+        if (DEV) {
+          console.warn(
+            "Fluor scripts can't be direct children of a f-if template"
+          )
+        }
+        continue
+      }
       element.__f_if_items__.push({ child })
       fragment.append(child)
     }
@@ -160,7 +174,9 @@ function handleFEach(attr, element, data) {
       ...new Set(element.__f_each_items__.map((e) => e.molecule)),
     ]
     for (const m of molecules) {
-      m.$root.parentNode.removeChild(m.$root)
+      if (m.$root.parentNode) {
+        m.$root.parentNode.removeChild(m.$root)
+      }
       destroyMolecule(m)
     }
     element.__f_each_items__ = null
@@ -170,6 +186,14 @@ function handleFEach(attr, element, data) {
     for (let index = 0, l = items.length; index < l; index++) {
       const clone = element.content.cloneNode(true)
       for (const child of [...clone.children]) {
+        if (isFluorScript(child)) {
+          if (DEV) {
+            console.warn(
+              "Fluor scripts can't be direct children of a f-if template"
+            )
+          }
+          continue
+        }
         element.__f_each_items__.push({ index, child })
         fragment.append(child)
       }
@@ -374,7 +398,7 @@ function discoverMolecules(root) {
   const atoms = []
 
   walk(root, (e) => {
-    if (e.tagName === "SCRIPT" && e.type === "fluor") {
+    if (isFluorScript(e)) {
       atoms.push(e)
     }
   })

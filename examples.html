@@ -79,6 +79,24 @@
     </fieldset>
 
     <fieldset>
+      <legend>Conditional with embedded Fluor script</legend>
+
+      <template f-if="shown">
+        <p f-text="message"></p>
+        <script type="fluor">
+          setup("message", "Hello, world!")
+        </script>
+      </template>
+
+      <button>Toggle message</button>
+
+      <script type="fluor">
+        setup("shown", false)
+        on("click", "button", set("shown", s => !s))
+      </script>
+    </fieldset>
+
+    <fieldset>
       <legend>Loops</legend>
 
       <h3>Simple Loop</h3>
@@ -140,26 +158,6 @@
 
         on("click", "button.remove-band-member", shift("bandMembers"))
         on("click", "button.add-band-member", append("bandMembers", prev => newMember(prev[prev.length - 1].id + 1)))
-      </script>
-    </fieldset>
-
-    <fieldset>
-      <legend>Conditional with embedded Fluor script</legend>
-
-      <template f-if="shown">
-        <div>
-          <p f-text="message"></p>
-          <script type="fluor">
-            setup("message", "Hello, world!")
-          </script>
-        </div>
-      </template>
-
-      <button>Toggle message</button>
-
-      <script type="fluor">
-        setup("shown", false)
-        on("click", "button", set("shown", s => !s))
       </script>
     </fieldset>
 
