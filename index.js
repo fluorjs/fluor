@@ -112,7 +112,7 @@ function handleFIf(attr, element, data) {
       ...new Set(element.__f_if_items__.map((e) => e.molecule)),
     ]
     for (const m of molecules) {
-      m.$root.parentElement.removeChild(m.$root)
+      m.$root.parentNode.removeChild(m.$root)
       destroyMolecule(m)
     }
     element.__f_if_items__ = null
@@ -160,7 +160,7 @@ function handleFEach(attr, element, data) {
       ...new Set(element.__f_each_items__.map((e) => e.molecule)),
     ]
     for (const m of molecules) {
-      m.$root.parentElement.removeChild(m.$root)
+      m.$root.parentNode.removeChild(m.$root)
       destroyMolecule(m)
     }
     element.__f_each_items__ = null
@@ -210,7 +210,7 @@ function createMolecule(moleculeId, rootNode) {
   const data = {}
   const merge = (obj) => Object.assign(data, obj)
 
-  const parent = rootNode ? moleculeOf(rootNode.parentElement) : null
+  const parent = rootNode ? moleculeOf(rootNode.parentNode) : null
   if (parent) {
     merge({ $parent: parent.$data })
   }
@@ -350,7 +350,7 @@ function newMolecule(rootNode) {
 
 function destroyMolecule(molecule) {
   for (const script of molecule.__scripts__) {
-    script.parentElement.removeChild(script)
+    script.parentNode.removeChild(script)
   }
 }
 
@@ -380,7 +380,7 @@ function discoverMolecules(root) {
   })
 
   for (const atom of atoms) {
-    const rootNode = atom.parentElement
+    const rootNode = atom.parentNode
     const molecule =
       FluorRuntime.__molecules__.get(rootNode) || newMolecule(rootNode)
     atom.__f_molecule__ = molecule
@@ -394,7 +394,7 @@ function discoverMolecules(root) {
       ","
     )}}) => {${atom.textContent}})`
     scriptElement.textContent = wrappedScript
-    atom.parentElement.removeChild(atom)
+    atom.parentNode.removeChild(atom)
     molecule.__scripts__.push(scriptElement)
     fragment.appendChild(scriptElement)
   }
