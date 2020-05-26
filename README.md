@@ -1,16 +1,12 @@
+<p align="center">
+  <img src="https://fluorjs.github.io/assets/logo.svg" width="60" />
+</p>
+
 # Fluor.js
 
-## Installation
+## Documentation
 
-```shell
-$ npm install fluor
-```
-
-or
-
-```shell
-$ yarn add fluor
-```
+See our [documentation website](https://fluorjs.github.io).
 
 ## Development
 
