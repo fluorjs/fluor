@@ -256,6 +256,19 @@
       </script>
     </fieldset>
 
+    <fieldset>
+      <legend>timers</legend>
+      <p f-text="now"></p>
+      <p f-text="counter"></p>
+      <button>Update later</button>
+      <script type="fluor">
+        setup("now", Date.now())
+        setup("counter", 0)
+        every(1/60, set("now", () => Date.now()))
+        on("click", "button", delay(2, set("counter", v => v + 1)))
+      </script>
+    </fieldset>
+
     <script>
       function randomText() {
         return Math.random().toString(36).slice(2)

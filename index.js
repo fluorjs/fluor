@@ -72,6 +72,8 @@ function domReady() {
   })
 }
 
+const requestAnimation = window.requestAnimationFrame
+
 // Breadth-first node tree walk. Doesn't recurse into child when the callback
 // fn returns false
 function walk(node, fn) {
@@ -322,6 +324,28 @@ function createMolecule(moleculeId, rootNode) {
         if (moleculeOf(node).$root === rootNode) {
           node.addEventListener(event, handler)
         }
+      }
+    },
+
+    // https://codereview.stackexchange.com/questions/47889/alternative-to-setinterval-and-settimeout
+    every(intervalInSeconds, action) {
+      const interval = intervalInSeconds * 1000
+      let start = Date.now()
+      const intervalFn = () => {
+        Date.now() - start < interval || ((start += interval), action())
+        requestAnimation(intervalFn)
+      }
+      requestAnimation(intervalFn)
+    },
+
+    delay(delayInSeconds, action) {
+      return () => {
+        const delay = delayInSeconds * 1000
+        let start = Date.now()
+        const timeoutFn = () => {
+          Date.now() - start < delay ? requestAnimation(timeoutFn) : action()
+        }
+        requestAnimation(timeoutFn)
       }
     },
 
