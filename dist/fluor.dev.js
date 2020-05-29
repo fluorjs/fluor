@@ -103,6 +103,13 @@ function moleculeOf(node) {
   return null
 }
 
+// Groups multiple actions in a single one when called with an array
+function chainActions(actionOrArray) {
+  return Array.isArray(actionOrArray)
+    ? (...args) => actionOrArray.forEach((action) => action(...args))
+    : actionOrArray
+}
+
 function handleFIf(attr, element, data) {
   if (element.tagName !== "TEMPLATE") {
     if (DEV) {
@@ -316,10 +323,8 @@ function createMolecule(moleculeId, rootNode) {
       _set(objectOrKey, valueOrFn)
     },
 
-    on(event, selector, fnOrArray) {
-      const handler = Array.isArray(fnOrArray)
-        ? (ev) => fnOrArray.forEach((fn) => fn(ev))
-        : fnOrArray
+    on(event, selector, actionOrArray) {
+      const handler = chainActions(actionOrArray)
       for (const node of $(selector, rootNode)) {
         if (moleculeOf(node).$root === rootNode) {
           node.addEventListener(event, handler)
@@ -328,22 +333,24 @@ function createMolecule(moleculeId, rootNode) {
     },
 
     // https://codereview.stackexchange.com/questions/47889/alternative-to-setinterval-and-settimeout
-    every(intervalInSeconds, action) {
+    every(intervalInSeconds, actionOrArray) {
+      const handler = chainActions(actionOrArray)
       const interval = intervalInSeconds * 1000
       let start = Date.now()
       const intervalFn = () => {
-        Date.now() - start < interval || ((start += interval), action())
+        Date.now() - start < interval || ((start += interval), handler())
         requestAnimation(intervalFn)
       }
       requestAnimation(intervalFn)
     },
 
-    delay(delayInSeconds, action) {
+    delay(delayInSeconds, actionOrArray) {
       return () => {
+        const handler = chainActions(actionOrArray)
         const delay = delayInSeconds * 1000
         let start = Date.now()
         const timeoutFn = () => {
-          Date.now() - start < delay ? requestAnimation(timeoutFn) : action()
+          Date.now() - start < delay ? requestAnimation(timeoutFn) : handler()
         }
         requestAnimation(timeoutFn)
       }
