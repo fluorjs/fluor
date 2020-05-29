@@ -17,11 +17,11 @@
     "build:dev": "sed 's/process.env.NODE_ENV/\"development\"/' index.js > dist/fluor.dev.js"
   },
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "prettier": "^2.0.5",
-    "terser": "^4.6.13",
+    "eslint": "^7.1.0",
     "husky": "^4.2.5",
-    "lint-staged": "^10.2.2"
+    "lint-staged": "^10.2.7",
+    "prettier": "^2.0.5",
+    "terser": "^4.7.0"
   },
   "prettier": {
     "semi": false
