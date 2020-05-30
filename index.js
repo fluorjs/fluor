@@ -76,12 +76,12 @@ const requestAnimation = window.requestAnimationFrame
 
 // Breadth-first node tree walk. Doesn't recurse into child when the callback
 // fn returns false
-function walk(node, fn) {
+async function walk(node, fn) {
   const queue = [node]
 
   while (queue.length) {
     const next = queue.shift()
-    if (fn(next) !== false) {
+    if ((await fn(next)) !== false) {
       for (const c of next.children) {
         queue.push(c)
       }
@@ -110,7 +110,7 @@ function chainActions(actionOrArray) {
     : actionOrArray
 }
 
-function handleFIf(attr, element, data) {
+async function handleFIf(attr, element, data) {
   if (element.tagName !== "TEMPLATE") {
     if (DEV) {
       console.warn("f-if only works on <template> tags")
@@ -149,7 +149,7 @@ function handleFIf(attr, element, data) {
       const { child } = ifItem
       const molecule = newMolecule(child)
       ifItem.molecule = molecule
-      discoverMolecules(child)
+      await discoverMolecules(child)
       molecule.render()
     }
 
@@ -162,7 +162,7 @@ function handleFIf(attr, element, data) {
   }
 }
 
-function handleFEach(attr, element, data) {
+async function handleFEach(attr, element, data) {
   if (element.tagName !== "TEMPLATE") {
     if (DEV) {
       console.warn("f-each only works on <template> tags")
@@ -209,7 +209,7 @@ function handleFEach(attr, element, data) {
         [iterator]: items[index],
       })
       eachItem.molecule = molecule
-      discoverMolecules(child)
+      await discoverMolecules(child)
       molecule.render()
     }
   }
@@ -239,10 +239,10 @@ function createMolecule(moleculeId, rootNode) {
     merge({ $parent: parent.$data })
   }
 
-  function render(updateChildren = true) {
+  async function render(updateChildren = true) {
     const mRoot = moleculeOf(rootNode)
 
-    walk(rootNode, (element) => {
+    await walk(rootNode, async (element) => {
       // Do not recurse into the element if it's from another molecule
       const mElement = moleculeOf(element)
       if (mElement !== mRoot) {
@@ -261,10 +261,10 @@ function createMolecule(moleculeId, rootNode) {
             element.innerHTML = dotPath(attr.value, data)
             break
           case "f-if":
-            handleFIf(attr, element, data)
+            await handleFIf(attr, element, data)
             break
           case "f-each":
-            handleFEach(attr, element, data)
+            await handleFEach(attr, element, data)
             break
           case "f-bind":
             handleFBind(attr, element, data)
@@ -433,10 +433,10 @@ window.RunFluor = FluorRuntime
 
 FluorRuntime.__molecules__ = new Map()
 
-function discoverMolecules(root) {
+async function discoverMolecules(root) {
   const atoms = []
 
-  walk(root, (e) => {
+  await walk(root, (e) => {
     if (isFluorScript(e)) {
       atoms.push(e)
     }
@@ -447,6 +447,19 @@ function discoverMolecules(root) {
     const molecule =
       FluorRuntime.__molecules__.get(rootNode) || newMolecule(rootNode)
     atom.__f_molecule__ = molecule
+    if (atom.hasAttribute("src")) {
+      try {
+        const scriptUrl = atom.getAttribute("src")
+        const response = await fetch(scriptUrl)
+        if (response.status >= 400) {
+          throw new Error(`Unable to load Fluor script ${scriptUrl}`)
+        }
+        const remoteScript = await response.text()
+        atom.textContent = remoteScript
+      } catch (error) {
+        atom.textContent = `console.error("${error.message}")`
+      }
+    }
   }
 
   const fragment = createFragment()
@@ -466,7 +479,7 @@ function discoverMolecules(root) {
 
 async function autostart() {
   await domReady()
-  discoverMolecules(document.body)
+  await discoverMolecules(document.body)
 }
 autostart()
 
