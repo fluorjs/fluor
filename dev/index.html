@@ -278,10 +278,27 @@
 
     <fieldset>
       <legend>Event Delegation</legend>
+
+      <template f-each="todo in todos">
+        <li class="todo">
+          <span f-text="todo.title"></span>
+        </li>
+      </template>
+
       <p>Click the bold part: <strong>Click me!</strong></p>
+
       <script type="fluor">
+        setup("todos", [{ title: "Hello Fluor" }]);
+
         on("click", "p", (ev) => console.log(ev))
+        on("click", ".todo", toggleClass("completed"));
       </script>
+
+      <style>
+        .completed {
+          text-decoration: line-through;
+        }
+      </style>
     </fieldset>
 
     <script>
