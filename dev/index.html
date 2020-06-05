@@ -82,10 +82,11 @@
       <legend>Conditional with embedded Fluor script</legend>
 
       <template f-if="shown">
-        <p f-text="message"></p>
-        <script type="fluor">
-          setup("message", "Hello, world!")
-        </script>
+        <p f-text="message">
+          <script type="fluor">
+            setup("message", "Hello, world!")
+          </script>
+        </p>
       </template>
 
       <button>Toggle message</button>
@@ -273,6 +274,14 @@
       <legend>load remote script</legend>
       <p f-text="hello"></p>
       <script type="fluor" src="loadme.fluor.js"></script>
+    </fieldset>
+
+    <fieldset>
+      <legend>Event Delegation</legend>
+      <p>Click the bold part: <strong>Click me!</strong></p>
+      <script type="fluor">
+        on("click", "p", (ev) => console.log(ev))
+      </script>
     </fieldset>
 
     <script>

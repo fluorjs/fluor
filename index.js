@@ -325,13 +325,22 @@ function createMolecule(moleculeId, rootNode) {
       _set(objectOrKey, valueOrFn)
     },
 
+    // Event handlers are added on the molecule root node and delegated
     on(event, selector, actionOrArray) {
-      const handler = chainActions(actionOrArray)
-      for (const node of $(selector, rootNode)) {
-        if (moleculeOf(node).$root === rootNode) {
-          node.addEventListener(event, handler)
+      const actionChain = chainActions(actionOrArray)
+      const handler = (ev) => {
+        const matchedTarget = ev.target.closest(selector)
+        if (matchedTarget && rootNode.contains(matchedTarget)) {
+          actionChain(
+            // We override the original target with the actual selected one
+            Object.create(ev, {
+              target: { value: matchedTarget },
+            })
+          )
         }
       }
+
+      rootNode.addEventListener(event, handler)
     },
 
     // https://codereview.stackexchange.com/questions/47889/alternative-to-setinterval-and-settimeout
