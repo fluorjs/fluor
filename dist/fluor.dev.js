@@ -216,8 +216,8 @@ async function handleFEach(attr, element, data) {
 }
 
 function handleFBind(attr, element, data) {
-  const [attrName, valuePath] = attr.value.split(":")
-  const value = dotPath(valuePath, data)
+  const attrName = attr.name.replace("f-bind-", "")
+  const value = dotPath(attr.value, data)
   switch (value) {
     case true:
       element.setAttribute(attrName, "")
@@ -266,8 +266,10 @@ function createMolecule(moleculeId, rootNode) {
           case "f-each":
             await handleFEach(attr, element, data)
             break
-          case "f-bind":
-            handleFBind(attr, element, data)
+          default:
+            if (attr.name.startsWith("f-bind-")) {
+              handleFBind(attr, element, data)
+            }
             break
         }
       }
