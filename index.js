@@ -329,7 +329,8 @@ function createMolecule(moleculeId, rootNode) {
     on(event, selector, actionOrArray) {
       const actionChain = chainActions(actionOrArray)
       const handler = (ev) => {
-        const matchedTarget = ev.target.closest(selector)
+        const matchedTarget =
+          selector instanceof Node ? selector : ev.target.closest(selector)
         if (matchedTarget && rootNode.contains(matchedTarget)) {
           ev.$target = matchedTarget
           actionChain(ev)
