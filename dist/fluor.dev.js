@@ -474,9 +474,9 @@ async function discoverMolecules(root) {
   for (const atom of atoms) {
     const molecule = atom.__f_molecule__
     const scriptElement = document.createElement("script")
-    const wrappedScript = `RunFluor("${molecule.$id}", ({${PUBLIC_API.join(
-      ","
-    )}}) => {${atom.textContent}})`
+    const wrappedScript = `RunFluor("${
+      molecule.$id
+    }", async ({${PUBLIC_API.join(",")}}) => {${atom.textContent}})`
     scriptElement.textContent = wrappedScript
     atom.parentNode.removeChild(atom)
     molecule.__scripts__.push(scriptElement)
