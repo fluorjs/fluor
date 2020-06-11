@@ -7,6 +7,8 @@
   "author": "François Vaux",
   "license": "MIT",
   "files": [
+    "LICENSE",
+    "README.md",
     "index.js",
     "dist/fluor.min.js",
     "dist/fluor.dev.js"
