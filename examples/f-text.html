@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>f-text examples</title>
+  </head>
+  <body>
+    <fieldset data-test-ref="simple-bind">
+      <legend>Simple bind</legend>
+      <p f-text="text"></p>
+
+      <script type="fluor">
+        setup("text", "Hello, world!")
+      </script>
+    </fieldset>
+
+    <fieldset data-test-ref="dotted-bind">
+      <legend>Dotted bind</legend>
+      <p f-text="dotted.text"></p>
+
+      <script type="fluor">
+        setup({ dotted: {text: "Hello, world!"}})
+      </script>
+    </fieldset>
+
+    <script type="module" src="../dist/fluor.dev.js"></script>
+  </body>
+</html>
