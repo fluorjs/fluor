@@ -8,6 +8,11 @@
 
 See our [documentation website](https://fluorjs.github.io).
 
+## Examples
+
+You can see some usage examples in the [examples/](./examples/) folder. These
+are also used in our tests!
+
 ## Development
 
 Commands:
