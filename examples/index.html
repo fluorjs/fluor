@@ -79,6 +79,30 @@
     </fieldset>
 
     <fieldset>
+      <legend>Conditionals (2)</legend>
+
+      <button data-block="0">Show block 0</button>
+      <button data-block="1">Show block 1</button>
+
+      <template f-if="show0">
+        <p>I'm block 0</p>
+      </template>
+
+      <template f-if="show1">
+        <p>I'm block 1</p>
+      </template>
+
+      <script type="fluor">
+        setup({
+          show0: true,
+          show1: false
+        })
+        on("click", "button[data-block='0']", set({show0: true, show1: false}))
+        on("click", "button[data-block='1']", set({show0: false, show1: true}))
+      </script>
+    </fieldset>
+
+    <fieldset>
       <legend>Conditional with embedded Fluor script</legend>
 
       <template f-if="shown">

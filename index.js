@@ -122,7 +122,7 @@ async function handleFIf(attr, element, data) {
 
   if (truthValue) {
     if (element.__f_if_items__) {
-      return element.__f_if_items__.forEach((m) => m.render())
+      return element.__f_if_items__.forEach((item) => item.molecule.render())
     }
 
     const fragment = createFragment()
@@ -157,7 +157,7 @@ async function handleFIf(attr, element, data) {
   }
 
   if (element.__f_if_items__) {
-    removeMolecules(element.__f_if_items__)
+    removeMolecules(element.__f_if_items__.map((item) => item.molecule))
     element.__f_if_items__ = null
   }
 }
@@ -178,7 +178,7 @@ async function handleFEach(attr, element, data) {
   // elements from the list.
   // We should probably use a key-based strategy like most other frameworks do.
   if (element.__f_each_items__) {
-    removeMolecules(element.__f_each_items__)
+    removeMolecules(element.__f_each_items__.map((item) => item.molecule))
     element.__f_each_items__ = null
     handleFEach(attr, element, data)
   } else {
@@ -416,7 +416,7 @@ function destroyMolecule(molecule) {
 }
 
 function removeMolecules(moleculeList) {
-  const molecules = [...new Set(moleculeList.map((e) => e.molecule))]
+  const molecules = [...new Set(moleculeList)]
   for (const m of molecules) {
     if (m.$root.parentNode) {
       m.$root.parentNode.removeChild(m.$root)
