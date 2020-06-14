@@ -1,6 +1,6 @@
 {
   "name": "fluor",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "Sprinkle interactivity on your design",
   "main": "index.js",
   "repository": "https://github.com/fluorjs/fluor",
