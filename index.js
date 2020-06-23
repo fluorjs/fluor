@@ -383,6 +383,10 @@ function createMolecule(moleculeId, rootNode) {
       return (ev) => fn(ev)()
     },
 
+    withTarget(fn) {
+      return (ev) => fn(ev.target)()
+    },
+
     render,
 
     classes: classNames,
