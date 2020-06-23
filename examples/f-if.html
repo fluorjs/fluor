@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>f-if examples</title>
+  </head>
+  <body>
+    <fieldset data-test="if-false">
+      <legend>False</legend>
+      <template f-if="visible">
+        <p>You can't see me!</p>
+      </template>
+
+      <script type="fluor">
+        setup("visible", false)
+      </script>
+    </fieldset>
+
+    <fieldset data-test="if-falsy">
+      <legend>Falsy</legend>
+      <template f-if="visible">
+        <p>You can't see me!</p>
+      </template>
+
+      <script type="fluor">
+        setup("visible", 0)
+      </script>
+    </fieldset>
+
+    <fieldset data-test="if-true">
+      <legend>True</legend>
+      <template f-if="visible">
+        <p>You can see me!</p>
+      </template>
+
+      <script type="fluor">
+        setup("visible", true)
+      </script>
+    </fieldset>
+
+    <fieldset data-test="if-truthy">
+      <legend>Truthy</legend>
+      <template f-if="visible">
+        <p>You can see me!</p>
+      </template>
+
+      <script type="fluor">
+        setup("visible", 1)
+      </script>
+    </fieldset>
+
+    <fieldset data-test="updates">
+      <legend>Updates</legend>
+      <template f-if="visible">
+        <p>You can see me!</p>
+      </template>
+      <button>Show!</button>
+
+      <script type="fluor">
+        setup("visible", false)
+        on("click", "button", toggle("visible"))
+      </script>
+    </fieldset>
+
+    <script type="module" src="../dist/fluor.dev.js"></script>
+  </body>
+</html>

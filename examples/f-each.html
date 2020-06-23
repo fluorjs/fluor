@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>f-each examples</title>
+  </head>
+  <body>
+    <fieldset data-test="basic-loop">
+      <legend>Basic loop</legend>
+      <ul>
+        <template f-each="item in items">
+          <li f-text="item"></li>
+        </template>
+      </ul>
+      <script type="fluor">
+        setup("items", [
+          "This is the first item",
+          "This is another item",
+          "This is the last item",
+        ])
+      </script>
+    </fieldset>
+
+    <fieldset data-test="updating-loop">
+      <legend>Updating loop</legend>
+      <ul>
+        <template f-each="item in items">
+          <li f-text="item"></li>
+        </template>
+      </ul>
+      <button>Add item</button>
+      <script type="fluor">
+        setup("items", [
+          "This is the first item",
+          "This is another item",
+          "This is the last item",
+        ])
+        on("click", "button", append("items", "This is the REAL last item"))
+      </script>
+    </fieldset>
+
+    <script type="module" src="../dist/fluor.dev.js"></script>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>f-bind examples</title>
+  </head>
+  <body>
+    <fieldset data-test="simple-bind">
+      <legend>Simple bind</legend>
+      <p f-bind-data-foo="variable">Hello</p>
+
+      <script type="fluor">
+        setup("variable", "value")
+      </script>
+    </fieldset>
+
+    <fieldset data-test="dotted-bind">
+      <legend>Dotted bind</legend>
+      <p f-bind-data-foo="dotted.variable">Hello</p>
+
+      <script type="fluor">
+        setup({ dotted: {variable: "value"}})
+      </script>
+    </fieldset>
+
+    <fieldset data-test="boolean-false-bind">
+      <legend>Booleans (false)</legend>
+      <p f-bind-data-foo="variable">Hello</p>
+
+      <script type="fluor">
+        setup("variable", false)
+      </script>
+    </fieldset>
+
+    <fieldset data-test="boolean-true-bind">
+      <legend>Booleans (true)</legend>
+      <p f-bind-data-foo="variable">Hello</p>
+
+      <script type="fluor">
+        setup("variable", true)
+      </script>
+    </fieldset>
+
+    <fieldset data-test="undefined-bind">
+      <legend>Undefined variables</legend>
+      <p f-bind-data-foo="variable">Hello</p>
+
+      <script type="fluor">
+        // Do nothing
+      </script>
+    </fieldset>
+    <script type="module" src="../dist/fluor.dev.js"></script>
+  </body>
+</html>

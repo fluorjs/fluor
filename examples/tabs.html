@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Tabs</title>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li data-tab="1" class="active">Show tab 1</li>
+        <li data-tab="2">Show tab 2</li>
+        <li data-tab="3">Show tab 3</li>
+      </ul>
+    </nav>
+
+    <template f-if="activeTab is 1">
+      <p>
+        This is the content of tab 1
+      </p>
+    </template>
+
+    <template f-if="activeTab.2">
+      <p>
+        This is the content of tab 2
+      </p>
+    </template>
+
+    <template f-if="activeTab.3">
+      <p>
+        This is the content of tab 3
+      </p>
+    </template>
+
+    <script type="fluor">
+      const setActiveTab = (num, setOrSetup = set) =>
+        setOrSetup({
+          activeTab: {
+            1: false,
+            2: false,
+            3: false,
+            [num]: true
+          }
+        })
+
+      setActiveTab(1, setup)
+
+      on("click", "li[data-tab]", [
+        withEvent(ev => setActiveTab(ev.target.dataset.tab)),
+        removeClass("active", "li.active"),
+        addClass("active")
+      ])
+    </script>
+
+    <script type="module" src="../dist/fluor.dev.js"></script>
+    <!-- <script type="module" src="dist/fluor.min.js"></script> -->
+
+    <style>
+      li[data-tab].active {
+        font-weight: bold;
+      }
+    </style>
+  </body>
+</html>

@@ -1,19 +1,13 @@
-/* global describe, it, beforeEach, cy */
+/* global describe, it, before, cy, test */
 
 describe("f-text", () => {
-  beforeEach(() => {
+  before(() => {
     cy.visit("http://localhost:5000/examples/f-text.html")
   })
 
-  it("updates elements with a variable's contents", () => {
-    cy.get("[data-test-ref='simple-bind']").then(() => {
-      cy.contains("Hello, world!")
-    })
-  })
+  it("updates elements with a variable's contents", () =>
+    test("simple-bind").find("p").contains("Hello, world!"))
 
-  it("allows using dotted paths", () => {
-    cy.get("[data-test-ref='dotted-bind']").then(() => {
-      cy.contains("Hello, world!")
-    })
-  })
+  it("allows using dotted paths", () =>
+    test("dotted-bind").find("p").contains("Hello, world!"))
 })
