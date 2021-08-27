@@ -4,7 +4,10 @@
 
 # Fluor
 
-This is a rewrite of Fluor, please see the [`old-main branch`](/tree/old-main/) for 0.6.5 and earlier code.
+This is a rewrite of Fluor, please see the [`old-main branch`](old-main) for
+0.6.5 and earlier code.
+
+[old-main]: https://github.com/fluorjs/fluor/tree/old-main
 
 ## Examples
 
