@@ -1,0 +1,8 @@
+{
+  "compress": {
+    "global_defs": {
+      "process.env.NODE_ENV": "production"
+    }
+  },
+  "module": true
+}
