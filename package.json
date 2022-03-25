@@ -1,13 +1,9 @@
 {
   "name": "fluor",
-  "version": "0.7.0",
+  "version": "0.6.99",
   "devDependencies": {
-    "eslint": "^7.32.0",
-    "prettier": "^2.3.2",
-    "terser": "^5.7.2",
-    "typedoc": "^0.21.6"
-  },
-  "prettier": {
-    "semi": false
+    "eslint": "^8.12.0",
+    "prettier": "^2.6.1",
+    "terser": "^5.12.1"
   }
 }
