@@ -3,9 +3,9 @@
   "version": "0.7.0",
   "devDependencies": {
     "eslint": "^7.32.0",
-    "jsdoc": "^3.6.7",
     "prettier": "^2.3.2",
-    "terser": "^5.7.2"
+    "terser": "^5.7.2",
+    "typedoc": "^0.21.6"
   },
   "prettier": {
     "semi": false
